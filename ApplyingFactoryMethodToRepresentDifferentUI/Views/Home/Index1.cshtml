@@ -1,0 +1,184 @@
+﻿<h1> Applying Factory Pattern To Handle a  dynamically changing razor view content</h1>
+
+
+
+
+
+<p></p>
+
+
+<h2>Introduction</h2>
+
+<ul>
+
+    <li>
+        A  requirement of a certain client was as follows>
+        <ul>
+            <li>
+                Display a view that some of its content hide and show dynamically
+            </li>
+            <li>
+                The show and hide  is determined a value selected from a drop down list
+            </li>
+        </ul>
+    </li>
+    <li>
+
+       <a href="Problem.txt">Example</a>
+
+
+    </li>
+    <li>
+        The problem in this implementation that it
+        <ol>
+            <li> breaks Single Responsibility Principle ,since the rendering is the responsibility of the controller</li>
+            <li> it has broken the Open Closed Principle,when the Js Code has been modified to deal with  a new value added to the drop down </li>
+        </ol>
+    </li>
+
+    <li>
+</ul>
+
+<h2>Solution Implementation</h2>
+<p>
+    <ul>
+        <li>
+            The design of the solution fixed the problem through the following
+            <ul>
+                <li>
+                    Moving the rendering part to the controlled
+                </li>
+                <li>
+                    Applying Factory Pattern  in order to maintain the application of Open Closed Principle
+                </li>
+            </ul>
+        </li>
+        <li>
+            Solution implementation is illustrated through the following walkthrough
+        </li>
+    </ul>
+    <h2>Solution Implementation WalkThough</h2>
+    <ul>
+        <li>
+            create a new ASP.NET MVC Core application in Visual Studio 2019 as follows:(Name the project ApplyingFactoryPatternToRepresentDifferentUI)
+            <img src=" https://www.codeproject.com/KB/TipsnTricks/5303793/Screenshot_2.png" style="display:block" />
+            <img src="https://www.codeproject.com/KB/TipsnTricks/5303793/Screenshot_3.png" style="display:block" />
+        </li>
+        <li>
+            Under Models folder ,create a new Model Class called base model <img src="screenshot1.png" />
+        </li>
+        <li>
+            The follwoing code is to be placed in the class created
+            <pre lang="cs">
+                 public abstract class BaseModel
+                    {
+                        public string CommonField1{get;set;}
+
+                        public string CommonField2 { get; set; }
+                    }
+            </pre>
+            The purpose of this class is to contain the common fields wich always appear in the view
+        </li>
+        <li>
+            Create a  the following 2 classes in the same place of the previous one
+            <ul>
+                <li>
+                    <pre lang="cs">
+                                public class DerivedModel1 : BaseModel
+                                     {
+                                           public string Model1Field1 { get; set; }
+
+                                         public string Model1Field2 { get; set; }
+                                     }
+                          </pre>
+                </li>
+                <li>
+                    <pre lang="cs">
+                                public class DerivedModel2 : BaseModel
+                                     {
+                                           public string Model2Field1 { get; set; }
+
+                                         public string Model2Field2 { get; set; }
+                                     }
+                          </pre>
+                </li>
+            </ul>
+            The purpose of these 2 classes is to contain fields that show and hide conditionally
+        </li>
+        <li>
+
+            Create a folder called creator with the interfaces and class structure as in the picture below
+            <img src="screenshot2.png" style="display:block" />
+            <ul>
+                <li>
+                    The interface code
+                    <pre lang="cs">
+                              interface IModelCreator
+                                    {
+                                        public IActionResult Create();
+       
+    
+
+                                    }
+                    </pre>
+                </li>
+                <li>
+                    The DerivedModel1Creator class code
+                    <pre lang="cs">
+                              public class DerivedModel1Creator : Creator.Intrface.IModelCreator
+                                {
+       
+                                    public IActionResult Create()
+                                    {
+                                        PartialViewResult viewResult = new PartialViewResult();
+                                        viewResult.ViewName = "DerivedModel1";
+                                        return viewResult;
+                                    }
+                                }
+                    </pre>
+                </li>
+                <li>
+                    The DerivedModel2Creator class code
+                    <pre lang="cs">
+                              public class DerivedModel2Creator : Creator.Intrface.IModelCreator
+                                {
+       
+                                    public IActionResult Create()
+                                    {
+                                        PartialViewResult viewResult = new PartialViewResult();
+                                        viewResult.ViewName = "DerivedModel2";
+                                        return viewResult;
+                                    }
+                                }
+                    </pre>
+                </li>
+                <li>The interface will act as an extension base that ,when implemented,will render different content conditionally </li>
+                <li>
+                    Create 2  new partial views named DerivedModel1,  DerivedModel2 respectively under views home folder
+                    <ul>
+                        <li>
+
+
+                            <a href="DerivedModel1.txt">The DerivedModel1 View code</a>
+                        </li>
+                        <li>
+
+                            <a href="DerivedModel2.txt"> The DerivedModel2Creator View code</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Replace the code in the home view under views\home\index.cshtml with <a href="HomeIndex.txt"> the following code></a>
+                </li>
+                <li>
+                    Add the <a href="HomeController.txt"> following methods</a> to the end of the code in controlles\homecontroller.cs
+                </li>
+                <li>
+                   Finally,run the application and test the behavior when selecting a value from the drop down list
+                </li>
+            </ul>
+        </li>
+        <h2>Conclusion and Points of Interest</h2>
+        <li>This division has been totally created by me and niether suggested nor copied from any body or any where </li>
+        <li>This is the first practical example on which I have applied the design principle(s) mentioned.So feedbacks are mostly welcomed </li>
+

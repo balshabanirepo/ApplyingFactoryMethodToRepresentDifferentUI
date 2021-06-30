@@ -1,0 +1,31 @@
+﻿@model ApplyingFactoryMethodToRepresentDifferentUI.Models.DerivedModel2
+
+@{
+    ViewData["Title"] = "DerivedModel2";
+}
+
+<h1>View Model2</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Model2Field1" class="control-label"></label>
+            <input asp-for="Model2Field1" class="form-control" />
+            <span asp-validation-for="Model2Field1" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Model2Field2" class="control-label"></label>
+            <input asp-for="Model2Field2" class="form-control" />
+            <span asp-validation-for="Model2Field2" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}
